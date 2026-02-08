@@ -1,0 +1,31 @@
+{
+  "name": "neighboryield-resilience",
+  "version": "0.1.0",
+  "description": "NeighborYield Resilience Edition - Business Logic Layer",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "ts-node src/demo.ts",
+    "test": "ts-node src/test.ts",
+    "test:gemini": "ts-node src/test-gemini.ts",
+    "watch": "tsc --watch"
+  },
+  "keywords": [
+    "food-sharing",
+    "mesh-network",
+    "resilience"
+  ],
+  "author": "Person 3 - Business Logic Team",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "@google/genai": "^1.40.0",
+    "@google/generative-ai": "^0.21.0",
+    "dotenv": "^17.2.4"
+  }
+}

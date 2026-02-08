@@ -8,6 +8,8 @@
  */
 
 import { SurvivalPost } from '../types';
+import { nearbyAdapter, isNearbyAvailable } from '../transport/nearbyAdapter';
+import type { Unsubscribe } from '../transport/types';
 
 export interface GossipMessage {
   type: 'post_list' | 'post_update' | 'ack';
@@ -99,6 +101,91 @@ class GossipService {
   private peerSyncStatus: Map<string, PeerSyncStatus> = new Map();
   private messageQueue: Array<{ message: GossipMessage; priority: MessagePriority; retryCount: number }> = [];
   private isProcessingQueue: boolean = false;
+  private unsubscribers: Unsubscribe[] = [];
+  private isInitialized: boolean = false;
+
+  /**
+   * Initialize the gossip service with nearbyAdapter
+   * Requirements: 1.3, 1.4
+   */
+  async initialize(): Promise<void> {
+    if (this.isInitialized) {
+      console.log('[Gossip] Already initialized');
+      return;
+    }
+
+    if (!isNearbyAvailable) {
+      console.warn('[Gossip] Nearby Connections not available, gossip service disabled');
+      return;
+    }
+
+    console.log('[Gossip] Initializing with nearbyAdapter...');
+
+    // Set up payload received handler
+    const unsubPayload = nearbyAdapter.onPayloadReceived((event) => {
+      try {
+        const message = JSON.parse(event.payload) as GossipMessage;
+        console.log(`[Gossip] Received payload from ${event.endpointId}`);
+        this.receiveMessage(message, event.endpointId);
+      } catch (error) {
+        console.error('[Gossip] Failed to parse received payload:', error);
+      }
+    });
+
+    // Set up endpoint found handler
+    const unsubFound = nearbyAdapter.onEndpointFound((event) => {
+      console.log(`[Gossip] Endpoint found: ${event.endpointId} (${event.endpointName || 'unknown'})`);
+    });
+
+    // Set up endpoint lost handler
+    const unsubLost = nearbyAdapter.onEndpointLost((event) => {
+      console.log(`[Gossip] Endpoint lost: ${event.endpointId}`);
+      // Mark peer as disconnected
+      const status = this.peerSyncStatus.get(event.endpointId);
+      if (status) {
+        status.isConnected = false;
+        this.peerSyncStatus.set(event.endpointId, status);
+      }
+    });
+
+    this.unsubscribers = [unsubPayload, unsubFound, unsubLost];
+
+    // Start advertising and discovery
+    try {
+      await nearbyAdapter.startAdvertising('NeighborYield');
+      await nearbyAdapter.startDiscovery();
+      console.log('[Gossip] Started advertising and discovery');
+    } catch (error) {
+      console.error('[Gossip] Failed to start advertising/discovery:', error);
+      throw error;
+    }
+
+    this.isInitialized = true;
+    console.log('[Gossip] Initialization complete');
+  }
+
+  /**
+   * Shutdown the gossip service
+   */
+  async shutdown(): Promise<void> {
+    console.log('[Gossip] Shutting down...');
+
+    // Unsubscribe from all events
+    this.unsubscribers.forEach(unsub => unsub());
+    this.unsubscribers = [];
+
+    // Stop nearbyAdapter
+    if (isNearbyAvailable) {
+      try {
+        await nearbyAdapter.stopAll();
+      } catch (error) {
+        console.error('[Gossip] Error stopping nearbyAdapter:', error);
+      }
+    }
+
+    this.isInitialized = false;
+    console.log('[Gossip] Shutdown complete');
+  }
 
   /**
    * Add a local post to be broadcast
@@ -300,23 +387,35 @@ class GossipService {
   }
 
   /**
-   * Send message via Bluetooth (stub implementation)
+   * Send message via nearbyAdapter
+   * Requirements: 1.3, 1.4, 1.5
    */
   private async sendViaBluetooth(message: GossipMessage): Promise<void> {
-    // Stub: In production, use react-native-ble-plx or similar
-    // This would:
-    // 1. Compress the message payload
-    // 2. Split into chunks if > 512 bytes
-    // 3. Send via BLE characteristic write
-    // 4. Wait for acknowledgment
-    
-    const compressed = compressPostList(message.payload);
-    if (compressed.length > 512) {
-      console.warn(`[Gossip] Message size ${compressed.length} bytes exceeds 512 byte limit`);
+    if (!isNearbyAvailable || !this.isInitialized) {
+      throw new Error('Gossip service not initialized or Nearby not available');
     }
 
-    // Simulate network delay
-    return new Promise(resolve => setTimeout(resolve, 50));
+    // Compress the message payload
+    const compressed = compressPostList(message.payload);
+    
+    // Check size limit (512 bytes for Bluetooth)
+    if (compressed.length > 512) {
+      console.warn(`[Gossip] Message size ${compressed.length} bytes exceeds 512 byte limit`);
+      // TODO: In future, implement chunking or further compression
+      throw new Error(`Message too large: ${compressed.length} bytes`);
+    }
+
+    // Serialize the entire message
+    const messageJson = JSON.stringify(message);
+
+    // Broadcast to all connected peers
+    try {
+      await nearbyAdapter.broadcastPayload(messageJson);
+      console.log(`[Gossip] Broadcast message via nearbyAdapter (${messageJson.length} bytes)`);
+    } catch (error) {
+      console.error('[Gossip] Failed to broadcast via nearbyAdapter:', error);
+      throw error;
+    }
   }
 
   /**

@@ -386,7 +386,7 @@ function AppContent(): React.JSX.Element {
   }, []);
 
   const handlePostSubmit = useCallback(
-    async (data: { title: string; description: string; riskTier: RiskTier }) => {
+    async (data: { title: string; description: string; riskTier: RiskTier; imageUrl?: string }) => {
       if (!currentUser) {
         Alert.alert('Error', 'You must be logged in to create a post');
         return;
@@ -396,6 +396,7 @@ function AppContent(): React.JSX.Element {
         title: data.title,
         description: data.description,
         riskTier: data.riskTier,
+        imageUrl: data.imageUrl, // Pass imageUrl to posts service
       };
 
       const { post, error } = await createPost(
@@ -407,7 +408,10 @@ function AppContent(): React.JSX.Element {
       if (error) {
         Alert.alert('Error', 'Failed to create post: ' + error.message);
       } else {
-        Alert.alert('Success', 'Your post has been created!');
+        const successMessage = data.imageUrl 
+          ? 'Your post with image has been created!' 
+          : 'Your post has been created!';
+        Alert.alert('Success', successMessage);
         console.log('Post created:', post);
         setScreen('feed');
 

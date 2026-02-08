@@ -12,6 +12,7 @@ export interface CreatePostData {
   riskTier: RiskTier;
   latitude?: number;
   longitude?: number;
+  imageUrl?: string;
 }
 
 export interface PostsError {
@@ -52,6 +53,7 @@ export async function fetchPosts(): Promise<{ posts: SharePost[]; error: PostsEr
             longitude: parseFloat(post.longitude),
           }
         : undefined,
+      imageUrl: post.image_url || undefined,
     }));
 
     return { posts, error: null };
@@ -100,6 +102,7 @@ export async function createPost(
         source: 'supabase',
         latitude: postData.latitude || null,
         longitude: postData.longitude || null,
+        image_url: postData.imageUrl || null,
       })
       .select()
       .single();
@@ -116,7 +119,7 @@ export async function createPost(
       description: data.description,
       riskTier: data.risk_tier as RiskTier,
       createdAt: new Date(data.created_at).getTime(),
-      expiresAt: new Date(data.expires_at).getTime(),
+      expiresAt: expiresAt.getTime(),
       source: 'supabase',
       location: data.latitude && data.longitude
         ? {
@@ -124,6 +127,7 @@ export async function createPost(
             longitude: parseFloat(data.longitude),
           }
         : undefined,
+      imageUrl: data.image_url || undefined,
     };
 
     return { post, error: null };
@@ -214,6 +218,7 @@ export function subscribeToPostUpdates(
                 longitude: parseFloat(data.longitude),
               }
             : undefined,
+          imageUrl: data.image_url || undefined,
         };
         onInsert(post);
       }
@@ -239,6 +244,7 @@ export function subscribeToPostUpdates(
                 longitude: parseFloat(data.longitude),
               }
             : undefined,
+          imageUrl: data.image_url || undefined,
         };
         onUpdate(post);
       }

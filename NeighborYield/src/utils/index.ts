@@ -122,3 +122,15 @@ export {
   promptForInitialMessage,
   handleInterestWithMessage,
 } from './interestFlow';
+
+// Error handling utilities
+export {
+  type ErrorType,
+  type ErrorDetails,
+  logError,
+  getErrorLog,
+  clearErrorLog,
+  parseError,
+  showErrorAlert,
+  handleError,
+} from './errorHandling';

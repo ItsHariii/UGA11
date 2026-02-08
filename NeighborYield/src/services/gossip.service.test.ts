@@ -18,6 +18,41 @@ import {
 } from './gossip.service';
 import { SurvivalPost } from '../types';
 
+// Mock nearbyAdapter
+jest.mock('../transport/nearbyAdapter', () => {
+  const mockUnsubscribe = jest.fn();
+  const mockHandlers: {
+    onPayloadReceived?: (event: any) => void;
+    onEndpointFound?: (event: any) => void;
+    onEndpointLost?: (event: any) => void;
+  } = {};
+
+  return {
+    isNearbyAvailable: true,
+    nearbyAdapter: {
+      startAdvertising: jest.fn().mockResolvedValue(undefined),
+      startDiscovery: jest.fn().mockResolvedValue(undefined),
+      stopAll: jest.fn().mockResolvedValue(undefined),
+      sendPayload: jest.fn().mockResolvedValue(undefined),
+      broadcastPayload: jest.fn().mockResolvedValue(undefined),
+      onPayloadReceived: jest.fn((handler) => {
+        mockHandlers.onPayloadReceived = handler;
+        return mockUnsubscribe;
+      }),
+      onEndpointFound: jest.fn((handler) => {
+        mockHandlers.onEndpointFound = handler;
+        return mockUnsubscribe;
+      }),
+      onEndpointLost: jest.fn((handler) => {
+        mockHandlers.onEndpointLost = handler;
+        return mockUnsubscribe;
+      }),
+    },
+    // Export handlers for testing
+    __mockHandlers: mockHandlers,
+  };
+});
+
 describe('Gossip Protocol Service', () => {
   // Helper to create test posts
   const createTestPost = (type: 'h' | 'w' | 's', id: string): SurvivalPost => ({
@@ -26,6 +61,115 @@ describe('Gossip Protocol Service', () => {
     h: 123,
     ts: Date.now(),
     id,
+  });
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  describe('nearbyAdapter Integration', () => {
+    it('should initialize with nearbyAdapter', async () => {
+      const { nearbyAdapter } = require('../transport/nearbyAdapter');
+      
+      await gossipService.initialize();
+
+      expect(nearbyAdapter.startAdvertising).toHaveBeenCalledWith('NeighborYield');
+      expect(nearbyAdapter.startDiscovery).toHaveBeenCalled();
+      expect(nearbyAdapter.onPayloadReceived).toHaveBeenCalled();
+      expect(nearbyAdapter.onEndpointFound).toHaveBeenCalled();
+      expect(nearbyAdapter.onEndpointLost).toHaveBeenCalled();
+    });
+
+    it('should handle received payloads', async () => {
+      const { nearbyAdapter, __mockHandlers } = require('../transport/nearbyAdapter');
+      
+      await gossipService.initialize();
+
+      // Simulate receiving a payload
+      const post = createTestPost('h', 'post001');
+      const message: GossipMessage = {
+        type: 'post_list',
+        payload: [post],
+        hopCount: 0,
+        timestamp: Date.now(),
+        senderId: 'peer1',
+      };
+
+      __mockHandlers.onPayloadReceived({
+        endpointId: 'endpoint1',
+        payload: JSON.stringify(message),
+      });
+
+      // Verify post was received
+      const localPosts = gossipService.getLocalPosts();
+      expect(localPosts).toContainEqual(post);
+    });
+
+    it('should handle endpoint lost events', async () => {
+      const { __mockHandlers } = require('../transport/nearbyAdapter');
+      
+      await gossipService.initialize();
+
+      // Add a peer
+      const post = createTestPost('h', 'post001');
+      const message: GossipMessage = {
+        type: 'post_list',
+        payload: [post],
+        hopCount: 0,
+        timestamp: Date.now(),
+        senderId: 'peer1',
+      };
+
+      __mockHandlers.onPayloadReceived({
+        endpointId: 'endpoint1',
+        payload: JSON.stringify(message),
+      });
+
+      // Simulate endpoint lost
+      __mockHandlers.onEndpointLost({
+        endpointId: 'endpoint1',
+      });
+
+      // Verify peer is marked as disconnected
+      const peerStatus = gossipService.getPeerSyncStatus();
+      const peer = peerStatus.find(p => p.peerId === 'endpoint1');
+      expect(peer?.isConnected).toBe(false);
+    });
+
+    it('should broadcast via nearbyAdapter', async () => {
+      const { nearbyAdapter } = require('../transport/nearbyAdapter');
+      
+      await gossipService.initialize();
+
+      // Add a post (which triggers broadcast)
+      const post = createTestPost('s', 'sos0001');
+      gossipService.addLocalPost(post);
+
+      // Wait for async broadcast
+      await new Promise(resolve => setTimeout(resolve, 200));
+
+      // Verify broadcastPayload was called
+      expect(nearbyAdapter.broadcastPayload).toHaveBeenCalled();
+    });
+
+    it('should shutdown cleanly', async () => {
+      const { nearbyAdapter } = require('../transport/nearbyAdapter');
+      
+      await gossipService.initialize();
+      await gossipService.shutdown();
+
+      expect(nearbyAdapter.stopAll).toHaveBeenCalled();
+    });
+
+    it('should not initialize twice', async () => {
+      const { nearbyAdapter } = require('../transport/nearbyAdapter');
+      
+      await gossipService.initialize();
+      await gossipService.initialize(); // Second call
+
+      // Should only be called once
+      expect(nearbyAdapter.startAdvertising).toHaveBeenCalledTimes(1);
+    });
   });
 
   describe('getPostPriority', () => {

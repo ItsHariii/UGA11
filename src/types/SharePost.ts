@@ -45,4 +45,7 @@ export interface SharePost {
 
   /** Origin of the post: local (mesh) or supabase (cloud) */
   source?: 'local' | 'supabase';
+
+  /** Optional image URL for food photo */
+  imageUrl?: string;
 }

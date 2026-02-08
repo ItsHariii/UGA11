@@ -7,3 +7,4 @@ export * from './auth.service';
 export * from './posts.service';
 export * from './interests.service';
 export * from './messaging.service';
+export * from './image.service';

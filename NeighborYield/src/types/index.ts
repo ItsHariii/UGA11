@@ -39,6 +39,88 @@ export interface SharePost {
     latitude: number;
     longitude: number;
   };
+  imageUrl?: string;
+}
+
+// ============================================
+// Image Asset Types
+// ============================================
+
+/**
+ * Image asset metadata from image picker
+ * Contains all information about a selected or captured image
+ */
+export interface ImageAsset {
+  /** Local URI of the image */
+  uri: string;
+  
+  /** MIME type of the image */
+  type: string; // 'image/jpeg' | 'image/png'
+  
+  /** Original filename */
+  fileName: string;
+  
+  /** File size in bytes */
+  fileSize: number;
+  
+  /** Image width in pixels */
+  width: number;
+  
+  /** Image height in pixels */
+  height: number;
+  
+  /** Optional base64 encoded data for AI analysis */
+  base64?: string;
+}
+
+/**
+ * Compressed image data ready for upload
+ */
+export interface CompressedImage {
+  /** Local URI of the compressed image */
+  uri: string;
+  
+  /** MIME type of the image */
+  type: string;
+  
+  /** Filename for upload */
+  fileName: string;
+  
+  /** Compressed file size in bytes */
+  fileSize: number;
+  
+  /** Optional base64 encoded data */
+  base64?: string;
+}
+
+/**
+ * AI analysis result from Gemini Vision API
+ * Contains extracted food data and risk classification
+ */
+export interface AIAnalysisResult {
+  /** Whether the analysis was successful */
+  success: boolean;
+  
+  /** Suggested title extracted from image */
+  suggestedTitle?: string;
+  
+  /** Suggested description extracted from image */
+  suggestedDescription?: string;
+  
+  /** AI observations about the food */
+  observations?: string;
+  
+  /** Classified risk tier */
+  riskTier?: RiskTier;
+  
+  /** Confidence score (0-1) */
+  confidence?: number;
+  
+  /** Error information if analysis failed */
+  error?: {
+    type: 'timeout' | 'rate_limit' | 'network_error' | 'invalid_image' | 'unknown';
+    message: string;
+  };
 }
 
 // ============================================

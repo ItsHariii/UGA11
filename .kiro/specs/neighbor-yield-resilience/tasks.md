@@ -11,124 +11,124 @@ This implementation is divided among 3 team members:
 
 ### Tasks
 
-- [ ] 1. Set up React Native project structure
-  - [ ] 1.1 Initialize React Native project with TypeScript
+- [-] 1. Set up React Native project structure
+  - [x] 1.1 Initialize React Native project with TypeScript
     - Configure Metro bundler for Android
     - Set up ESLint and Prettier
     - _Requirements: Project setup_
   
-  - [ ] 1.2 Create folder structure for components, screens, hooks, and types
+  - [x] 1.2 Create folder structure for components, screens, hooks, and types
     - Create src/components, src/screens, src/hooks, src/types, src/context
     - _Requirements: Project organization_
 
-- [ ] 2. Implement Feed Screen UI
-  - [ ] 2.1 Create SharePostCard component
+- [x] 2. Implement Feed Screen UI
+  - [x] 2.1 Create SharePostCard component
     - Display title, description, author identifier, risk tier badge
     - Show "posted X min ago" relative time indicator
     - Show warning indicator when TTL < 5 minutes
     - _Requirements: 5.4, 5.5, 6.5_
   
-  - [ ] 2.2 Create "I'm Interested" button with loading/success states
+  - [x] 2.2 Create "I'm Interested" button with loading/success states
     - Handle tap to express interest
     - Show pending/success/error states
     - _Requirements: 1.1_
   
-  - [ ] 2.3 Create FeedList component with pull-to-refresh
+  - [x] 2.3 Create FeedList component with pull-to-refresh
     - Render list of SharePostCards
     - Handle empty state
     - Auto-remove expired posts with animation
     - _Requirements: 5.2_
   
-  - [ ]* 2.4 Write unit tests for SharePostCard time formatting
+  - [x]* 2.4 Write unit tests for SharePostCard time formatting
     - Test relative time display logic
     - Test warning indicator threshold
     - _Requirements: 5.4, 5.5_
 
-- [ ] 3. Implement Post Creation Screen
-  - [ ] 3.1 Create PostCreatorForm component
+- [x] 3. Implement Post Creation Screen
+  - [x] 3.1 Create PostCreatorForm component
     - Title and description inputs
     - Risk tier selector (High/Medium/Low) with TTL preview
     - Submit button
     - _Requirements: 6.1_
   
-  - [ ] 3.2 Create RiskTierPicker component
+  - [x] 3.2 Create RiskTierPicker component
     - Three options with icons and TTL labels
     - Visual feedback on selection
     - _Requirements: 6.1, 6.2, 6.3, 6.4_
 
-- [ ] 4. Implement Presence Indicator UI
-  - [ ] 4.1 Create PresenceIndicator component
+- [x] 4. Implement Presence Indicator UI
+  - [x] 4.1 Create PresenceIndicator component
     - Display "X neighbors in range" or "No neighbors in range"
     - Muted style when no peers
     - Animation on count increase
     - _Requirements: 3.6, 4.1, 4.2, 4.3_
   
-  - [ ] 4.2 Create PresenceTooltip component
+  - [x] 4.2 Create PresenceTooltip component
     - Show mesh network status explanation on tap
     - _Requirements: 4.5_
   
-  - [ ] 4.3 Handle online-only mode display
+  - [x] 4.3 Handle online-only mode display
     - Show "Online mode" when in online-only connectivity
     - _Requirements: 4.4_
   
-  - [ ]* 4.4 Write property test for peer count display format
+  - [x]* 4.4 Write property test for peer count display format
     - **Property 11: Peer Count Display Format**
     - **Validates: Requirements 3.6, 4.2**
 
-- [ ] 5. Implement Permission Flow UI
-  - [ ] 5.1 Create PermissionExplanationScreen component
+- [x] 5. Implement Permission Flow UI
+  - [x] 5.1 Create PermissionExplanationScreen component
     - Explanatory content for each permission type
     - "Continue" button to trigger system request
     - _Requirements: 7.2, 7.3, 7.4, 7.5_
   
-  - [ ] 5.2 Create PermissionStatusBar component
+  - [x] 5.2 Create PermissionStatusBar component
     - Icons for Bluetooth, Location, Nearby Devices status
     - Warning indicators for denied permissions
     - Tap to navigate to settings or re-request
     - _Requirements: 8.1, 8.2, 8.3_
   
-  - [ ] 5.3 Create BluetoothDisabledPrompt component
+  - [x] 5.3 Create BluetoothDisabledPrompt component
     - Prompt user to enable system Bluetooth
     - _Requirements: 8.4_
   
-  - [ ]* 5.4 Write property test for permission status visualization
+  - [x]* 5.4 Write property test for permission status visualization
     - **Property 21: Permission Status Visualization**
     - **Validates: Requirements 8.1, 8.2**
 
-- [ ] 6. Implement Interest Notification UI
-  - [ ] 6.1 Create InterestNotificationCard component
+- [x] 6. Implement Interest Notification UI
+  - [x] 6.1 Create InterestNotificationCard component
     - Show interested user's identifier
     - Accept/Decline buttons
     - _Requirements: 1.4_
   
-  - [ ] 6.2 Create InterestQueueList component
+  - [x] 6.2 Create InterestQueueList component
     - Display all pending interests for poster's posts
     - _Requirements: 1.5_
   
-  - [ ] 6.3 Create InterestResponseToast component
+  - [x] 6.3 Create InterestResponseToast component
     - Show response received from poster
     - _Requirements: 2.4_
 
-- [ ] 7. Implement Connectivity and Battery UI
-  - [ ] 7.1 Create ConnectivityBanner component
+- [x] 7. Implement Connectivity and Battery UI
+  - [x] 7.1 Create ConnectivityBanner component
     - Show current mode (Online/Offline/Hybrid)
     - Warning for disconnected state with instructions
     - _Requirements: 10.4_
   
-  - [ ] 7.2 Create BackgroundMeshToggle component
+  - [x] 7.2 Create BackgroundMeshToggle component
     - Settings toggle for background mesh option
     - _Requirements: 9.3_
   
-  - [ ] 7.3 Create LowBatteryNotice component
+  - [x] 7.3 Create LowBatteryNotice component
     - Notification when battery < 15% disables background mesh
     - _Requirements: 9.5_
 
-- [ ] 8. Implement App Context and State Management
-  - [ ] 8.1 Create AppContext with connectivity mode, permissions, peer count
+- [x] 8. Implement App Context and State Management
+  - [x] 8.1 Create AppContext with connectivity mode, permissions, peer count
     - Provide state to all components
     - _Requirements: All UI requirements_
   
-  - [ ] 8.2 Create custom hooks: useConnectivity, usePermissions, usePeerCount, useTTL
+  - [x] 8.2 Create custom hooks: useConnectivity, usePermissions, usePeerCount, useTTL
     - Abstract business logic access for UI
     - _Requirements: All UI requirements_
 

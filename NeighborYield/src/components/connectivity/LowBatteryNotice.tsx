@@ -92,8 +92,7 @@ export function LowBatteryNotice({
         },
       ]}
       accessibilityRole="alert"
-      accessibilityLabel={getNoticeMessage(batteryLevel)}
-    >
+      accessibilityLabel={getNoticeMessage(batteryLevel)}>
       <View style={styles.content}>
         <View style={styles.iconContainer}>
           <Text style={styles.icon}>🪫</Text>
@@ -110,8 +109,7 @@ export function LowBatteryNotice({
             style={styles.dismissButton}
             onPress={onDismiss}
             accessibilityRole="button"
-            accessibilityLabel="Dismiss notice"
-          >
+            accessibilityLabel="Dismiss notice">
             <Text style={styles.dismissIcon}>✕</Text>
           </Pressable>
         )}
@@ -119,12 +117,7 @@ export function LowBatteryNotice({
 
       <View style={styles.batteryIndicator}>
         <View style={styles.batteryTrack}>
-          <View
-            style={[
-              styles.batteryFill,
-              { width: `${Math.max(batteryLevel, 5)}%` },
-            ]}
-          />
+          <View style={[styles.batteryFill, { width: `${Math.max(batteryLevel, 5)}%` }]} />
         </View>
         <Text style={styles.batteryText}>{batteryLevel}%</Text>
       </View>
@@ -225,4 +218,12 @@ const styles = StyleSheet.create({
   },
 });
 
-export default LowBatteryNotice;
+// ============================================
+// Memoized Export
+// Requirements: 9.2 - Minimize component re-renders using React.memo
+// ============================================
+
+export const MemoizedLowBatteryNotice = React.memo(LowBatteryNotice);
+MemoizedLowBatteryNotice.displayName = 'LowBatteryNotice';
+
+export default MemoizedLowBatteryNotice;

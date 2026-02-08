@@ -14,13 +14,7 @@ import React, {
   useReducer,
   ReactNode,
 } from 'react';
-import {
-  ConnectivityMode,
-  InterestAck,
-  PeerInfo,
-  PermissionStatus,
-  SharePost,
-} from '../types';
+import { ConnectivityMode, InterestAck, PeerInfo, PermissionStatus, SharePost } from '../types';
 
 // ============================================
 // State Interface
@@ -93,7 +87,7 @@ const defaultPermissions: PermissionStatus = {
 };
 
 export const initialAppState: AppState = {
-  connectivityMode: 'disconnected',
+  connectivityMode: 'online',
   permissions: defaultPermissions,
   isBluetoothEnabled: false,
   peerCount: 0,
@@ -163,14 +157,14 @@ function appReducer(state: AppState, action: AppAction): AppState {
     case 'REMOVE_POST':
       return {
         ...state,
-        posts: state.posts.filter((p) => p.id !== action.payload),
+        posts: state.posts.filter(p => p.id !== action.payload),
       };
 
     case 'REMOVE_EXPIRED_POSTS': {
       const currentTime = action.payload;
       return {
         ...state,
-        posts: state.posts.filter((p) => p.expiresAt > currentTime),
+        posts: state.posts.filter(p => p.expiresAt > currentTime),
       };
     }
 
@@ -197,9 +191,7 @@ function appReducer(state: AppState, action: AppAction): AppState {
         }
       }
       // Update in incomingInterests
-      const newIncoming = state.incomingInterests.map((i) =>
-        i.id === id ? { ...i, status } : i
-      );
+      const newIncoming = state.incomingInterests.map(i => (i.id === id ? { ...i, status } : i));
       return {
         ...state,
         myInterests: newMyInterests,
@@ -285,10 +277,7 @@ export interface AppProviderProps {
   initialState?: Partial<AppState>;
 }
 
-export function AppProvider({
-  children,
-  initialState,
-}: AppProviderProps): React.JSX.Element {
+export function AppProvider({ children, initialState }: AppProviderProps): React.JSX.Element {
   const [state, dispatch] = useReducer(appReducer, {
     ...initialAppState,
     ...initialState,
@@ -351,12 +340,9 @@ export function AppProvider({
     dispatch({ type: 'ADD_INCOMING_INTEREST', payload: interest });
   }, []);
 
-  const updateInterestStatus = useCallback(
-    (id: string, status: InterestAck['status']) => {
-      dispatch({ type: 'UPDATE_INTEREST_STATUS', payload: { id, status } });
-    },
-    []
-  );
+  const updateInterestStatus = useCallback((id: string, status: InterestAck['status']) => {
+    dispatch({ type: 'UPDATE_INTEREST_STATUS', payload: { id, status } });
+  }, []);
 
   // Battery actions
   const setBatteryLevel = useCallback((level: number) => {
@@ -419,7 +405,7 @@ export function AppProvider({
       setBackgroundMeshEnabled,
       setRefreshing,
       setUser,
-    ]
+    ],
   );
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

@@ -61,7 +61,6 @@ export function getRiskTierLabel(tier: RiskTier): string {
   return labels[tier];
 }
 
-
 /**
  * Returns color for risk tier badge
  */
@@ -80,12 +79,12 @@ export function SharePostCard({
 }: SharePostCardProps): React.JSX.Element {
   const relativeTime = useMemo(
     () => formatRelativeTime(post.createdAt, currentTime),
-    [post.createdAt, currentTime]
+    [post.createdAt, currentTime],
   );
 
   const showWarning = useMemo(
     () => isInWarningState(post.expiresAt, currentTime),
-    [post.expiresAt, currentTime]
+    [post.expiresAt, currentTime],
   );
 
   const riskTierColor = getRiskTierColor(post.riskTier);
@@ -194,4 +193,12 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SharePostCard;
+// ============================================
+// Memoized Export
+// Requirements: 9.2 - Minimize component re-renders using React.memo
+// ============================================
+
+export const MemoizedSharePostCard = React.memo(SharePostCard);
+MemoizedSharePostCard.displayName = 'SharePostCard';
+
+export default MemoizedSharePostCard;

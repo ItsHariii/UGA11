@@ -19,12 +19,6 @@ export interface UseConnectivityResult {
   /** Whether the app can use mesh networking */
   canUseMesh: boolean;
 
-  /** Whether the app is completely disconnected */
-  isDisconnected: boolean;
-
-  /** Whether the app is in hybrid mode (both online and mesh) */
-  isHybrid: boolean;
-
   /** Set the connectivity mode */
   setMode: (mode: ConnectivityMode) => void;
 }
@@ -36,39 +30,26 @@ export function useConnectivity(): UseConnectivityResult {
   const { state, setConnectivityMode } = useAppContext();
 
   const isOnline = useMemo(
-    () => state.connectivityMode === 'online' || state.connectivityMode === 'hybrid',
-    [state.connectivityMode]
+    () => state.connectivityMode === 'online',
+    [state.connectivityMode],
   );
 
   const canUseMesh = useMemo(
-    () =>
-      state.connectivityMode === 'offline' || state.connectivityMode === 'hybrid',
-    [state.connectivityMode]
-  );
-
-  const isDisconnected = useMemo(
-    () => state.connectivityMode === 'disconnected',
-    [state.connectivityMode]
-  );
-
-  const isHybrid = useMemo(
-    () => state.connectivityMode === 'hybrid',
-    [state.connectivityMode]
+    () => state.connectivityMode === 'offline',
+    [state.connectivityMode],
   );
 
   const setMode = useCallback(
     (mode: ConnectivityMode) => {
       setConnectivityMode(mode);
     },
-    [setConnectivityMode]
+    [setConnectivityMode],
   );
 
   return {
     mode: state.connectivityMode,
     isOnline,
     canUseMesh,
-    isDisconnected,
-    isHybrid,
     setMode,
   };
 }

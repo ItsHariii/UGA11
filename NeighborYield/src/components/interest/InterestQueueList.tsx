@@ -27,7 +27,7 @@ export interface InterestQueueListProps {
  * Filters interests to only show pending ones
  */
 export function filterPendingInterests(interests: InterestQueueItem[]): InterestQueueItem[] {
-  return interests.filter((item) => item.interest.status === 'pending');
+  return interests.filter(item => item.interest.status === 'pending');
 }
 
 /**

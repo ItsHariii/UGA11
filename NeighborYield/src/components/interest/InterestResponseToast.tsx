@@ -5,7 +5,7 @@
  * Requirements: 2.4
  */
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useCallback } from 'react';
 import { Animated, Pressable, StyleSheet, Text, View } from 'react-native';
 import { InterestResponse } from '../../types';
 
@@ -51,6 +51,23 @@ export function InterestResponseToast({
   const translateY = useRef(new Animated.Value(-100)).current;
   const opacity = useRef(new Animated.Value(0)).current;
 
+  const handleDismiss = useCallback(() => {
+    Animated.parallel([
+      Animated.timing(translateY, {
+        toValue: -100,
+        duration: 200,
+        useNativeDriver: true,
+      }),
+      Animated.timing(opacity, {
+        toValue: 0,
+        duration: 200,
+        useNativeDriver: true,
+      }),
+    ]).start(() => {
+      onDismiss();
+    });
+  }, [translateY, opacity, onDismiss]);
+
   useEffect(() => {
     if (visible) {
       // Animate in
@@ -79,24 +96,8 @@ export function InterestResponseToast({
       translateY.setValue(-100);
       opacity.setValue(0);
     }
-  }, [visible, autoDismissMs]);
-
-  const handleDismiss = () => {
-    Animated.parallel([
-      Animated.timing(translateY, {
-        toValue: -100,
-        duration: 200,
-        useNativeDriver: true,
-      }),
-      Animated.timing(opacity, {
-        toValue: 0,
-        duration: 200,
-        useNativeDriver: true,
-      }),
-    ]).start(() => {
-      onDismiss();
-    });
-  };
+    return undefined;
+  }, [visible, autoDismissMs, translateY, opacity, handleDismiss]);
 
   if (!visible) {
     return null;
@@ -115,20 +116,17 @@ export function InterestResponseToast({
           transform: [{ translateY }],
           opacity,
         },
-      ]}
-    >
+      ]}>
       <Pressable
         style={styles.content}
         onPress={handleDismiss}
         accessibilityRole="alert"
-        accessibilityLabel={text}
-      >
+        accessibilityLabel={text}>
         <View
           style={[
             styles.iconContainer,
             variant === 'success' ? styles.successIcon : styles.declinedIcon,
-          ]}
-        >
+          ]}>
           <Text style={styles.icon}>{icon}</Text>
         </View>
         <View style={styles.textContainer}>
@@ -140,7 +138,7 @@ export function InterestResponseToast({
           </Text>
           {response.message && (
             <Text style={styles.posterMessage} numberOfLines={1}>
-              "{response.message}"
+              &quot;{response.message}&quot;
             </Text>
           )}
         </View>

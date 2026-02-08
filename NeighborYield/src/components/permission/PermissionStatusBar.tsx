@@ -118,27 +118,22 @@ function PermissionIcon({ permission, state, onPress }: PermissionIconProps): Re
       onPress={onPress}
       accessibilityRole="button"
       accessibilityLabel={`${config.label}: ${isGranted ? 'granted' : 'denied'}`}
-      accessibilityHint={showWarning ? 'Tap to fix permission' : 'Tap for details'}
-    >
+      accessibilityHint={showWarning ? 'Tap to fix permission' : 'Tap for details'}>
       <View
         style={[
           styles.iconContainer,
-          { backgroundColor: isGranted ? '#e8f5e9' : '#ffebee' },
-        ]}
-      >
+          isGranted ? styles.iconContainerGranted : styles.iconContainerDenied,
+        ]}>
         <Text style={styles.permissionIcon}>{config.icon}</Text>
         <View
           style={[
             styles.statusBadge,
             { backgroundColor: isGranted ? config.grantedColor : config.deniedColor },
-          ]}
-        >
+          ]}>
           <Text style={styles.statusIcon}>{getStatusIcon(state)}</Text>
         </View>
       </View>
-      <Text style={[styles.label, showWarning && styles.warningLabel]}>
-        {config.label}
-      </Text>
+      <Text style={[styles.label, showWarning && styles.warningLabel]}>{config.label}</Text>
       {showWarning && <Text style={styles.warningIcon}>⚠️</Text>}
     </Pressable>
   );
@@ -156,8 +151,9 @@ export function PermissionStatusBar({
   return (
     <View style={styles.container}>
       <View style={styles.iconsRow}>
-        {permissions.map((permission) => {
-          const state = permissionStatus[permission];
+        {permissions.map(permission => {
+          const permKey = permission === 'nearby_devices' ? 'nearbyDevices' : permission;
+          const state = permissionStatus[permKey as keyof Omit<PermissionStatus, 'canUseMesh'>];
           return (
             <PermissionIcon
               key={permission}
@@ -171,9 +167,7 @@ export function PermissionStatusBar({
 
       {hasAnyDenied && (
         <View style={styles.warningBanner}>
-          <Text style={styles.warningText}>
-            Some permissions are missing. Tap an icon to fix.
-          </Text>
+          <Text style={styles.warningText}>Some permissions are missing. Tap an icon to fix.</Text>
         </View>
       )}
 
@@ -182,8 +176,7 @@ export function PermissionStatusBar({
           style={styles.bluetoothBanner}
           onPress={onBluetoothPrompt}
           accessibilityRole="button"
-          accessibilityLabel="Enable Bluetooth"
-        >
+          accessibilityLabel="Enable Bluetooth">
           <Text style={styles.bluetoothIcon}>📶</Text>
           <Text style={styles.bluetoothText}>
             Bluetooth is off. Tap to enable for mesh networking.
@@ -221,6 +214,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     position: 'relative',
+  },
+  iconContainerGranted: {
+    backgroundColor: '#e8f5e9',
+  },
+  iconContainerDenied: {
+    backgroundColor: '#ffebee',
   },
   permissionIcon: {
     fontSize: 24,

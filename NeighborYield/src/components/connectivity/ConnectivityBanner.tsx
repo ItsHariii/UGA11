@@ -97,14 +97,11 @@ export function ConnectivityBanner({
         styles.container,
         { backgroundColor: config.backgroundColor },
         isDisconnected && styles.warningContainer,
-      ]}
-    >
+      ]}>
       <View style={styles.mainRow}>
         <Text style={styles.icon}>{config.icon}</Text>
         <View style={styles.textContainer}>
-          <Text style={[styles.label, { color: config.textColor }]}>
-            {config.label}
-          </Text>
+          <Text style={[styles.label, { color: config.textColor }]}>{config.label}</Text>
           <Text style={[styles.description, { color: config.textColor }]}>
             {config.description}
           </Text>
@@ -113,9 +110,7 @@ export function ConnectivityBanner({
 
       {isDisconnected && (
         <View style={styles.instructionsContainer}>
-          <Text style={styles.instructions}>
-            {getDisconnectedInstructions()}
-          </Text>
+          <Text style={styles.instructions}>{getDisconnectedInstructions()}</Text>
           <Text style={styles.tapHint}>Tap for settings</Text>
         </View>
       )}
@@ -128,8 +123,7 @@ export function ConnectivityBanner({
         onPress={onDisconnectedPress}
         accessibilityRole="button"
         accessibilityLabel="Disconnected. Tap to open settings."
-        accessibilityHint="Opens settings to enable permissions or connect to internet"
-      >
+        accessibilityHint="Opens settings to enable permissions or connect to internet">
         {content}
       </Pressable>
     );
@@ -192,4 +186,12 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ConnectivityBanner;
+// ============================================
+// Memoized Export
+// Requirements: 9.2 - Minimize component re-renders using React.memo
+// ============================================
+
+export const MemoizedConnectivityBanner = React.memo(ConnectivityBanner);
+MemoizedConnectivityBanner.displayName = 'ConnectivityBanner';
+
+export default MemoizedConnectivityBanner;

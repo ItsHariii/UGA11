@@ -71,7 +71,7 @@ export function RiskTierPicker({
 }: RiskTierPickerProps): React.JSX.Element {
   return (
     <View style={styles.container}>
-      {RISK_TIER_OPTIONS.map((option) => {
+      {RISK_TIER_OPTIONS.map(option => {
         const isSelected = selectedTier === option.tier;
 
         return (
@@ -88,32 +88,16 @@ export function RiskTierPicker({
             disabled={disabled}
             accessibilityRole="radio"
             accessibilityLabel={`${option.label} risk: ${option.description}, expires in ${option.ttlLabel}`}
-            accessibilityState={{ selected: isSelected, disabled }}
-          >
+            accessibilityState={{ selected: isSelected, disabled }}>
             <Text style={styles.icon}>{option.icon}</Text>
             <View style={styles.optionContent}>
-              <Text
-                style={[
-                  styles.optionLabel,
-                  isSelected && { color: option.color },
-                ]}
-              >
+              <Text style={[styles.optionLabel, isSelected && { color: option.color }]}>
                 {option.label}
               </Text>
               <Text style={styles.optionDescription}>{option.description}</Text>
             </View>
-            <View
-              style={[
-                styles.ttlBadge,
-                isSelected && { backgroundColor: option.color },
-              ]}
-            >
-              <Text
-                style={[
-                  styles.ttlBadgeText,
-                  isSelected && styles.ttlBadgeTextSelected,
-                ]}
-              >
+            <View style={[styles.ttlBadge, isSelected && { backgroundColor: option.color }]}>
+              <Text style={[styles.ttlBadgeText, isSelected && styles.ttlBadgeTextSelected]}>
                 {option.ttlLabel}
               </Text>
             </View>

@@ -95,13 +95,11 @@ export function PostCreatorForm({
   return (
     <KeyboardAvoidingView
       style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-    >
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
-        keyboardShouldPersistTaps="handled"
-      >
+        keyboardShouldPersistTaps="handled">
         <Text style={styles.header}>Share Food</Text>
 
         {errors.length > 0 && (
@@ -168,8 +166,7 @@ export function PostCreatorForm({
           disabled={isSubmitting}
           accessibilityRole="button"
           accessibilityLabel="Create post"
-          accessibilityState={{ disabled: isSubmitting }}
-        >
+          accessibilityState={{ disabled: isSubmitting }}>
           <Text style={styles.submitButtonText}>
             {isSubmitting ? 'Creating...' : 'Share with Neighbors'}
           </Text>

@@ -5,7 +5,6 @@
 
 // App context
 export {
-  AppContext,
   AppProvider,
   useAppContext,
   initialAppState,

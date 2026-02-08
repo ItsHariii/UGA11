@@ -77,25 +77,21 @@ export function PresenceIndicator({
   const isOnlineOnly = connectivityMode === 'online';
   const hasPeers = peerCount > 0;
 
-  const displayText = isOnlineOnly
-    ? getOnlineModeText()
-    : formatPeerCountDisplay(peerCount);
+  const displayText = isOnlineOnly ? getOnlineModeText() : formatPeerCountDisplay(peerCount);
 
   return (
     <Pressable
       onPress={onPress}
       accessibilityRole="button"
       accessibilityLabel={displayText}
-      accessibilityHint="Tap to see mesh network status"
-    >
+      accessibilityHint="Tap to see mesh network status">
       <Animated.View
         style={[
           styles.container,
           !hasPeers && !isOnlineOnly && styles.mutedContainer,
           isOnlineOnly && styles.onlineContainer,
           { transform: [{ scale: scaleAnim }] },
-        ]}
-      >
+        ]}>
         <View style={styles.iconContainer}>
           <Text style={styles.icon}>{isOnlineOnly ? '🌐' : hasPeers ? '📡' : '📴'}</Text>
         </View>
@@ -104,8 +100,7 @@ export function PresenceIndicator({
             styles.text,
             !hasPeers && !isOnlineOnly && styles.mutedText,
             isOnlineOnly && styles.onlineText,
-          ]}
-        >
+          ]}>
           {displayText}
         </Text>
         {hasPeers && !isOnlineOnly && (
@@ -170,4 +165,12 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PresenceIndicator;
+// ============================================
+// Memoized Export
+// Requirements: 9.2 - Minimize component re-renders using React.memo
+// ============================================
+
+export const MemoizedPresenceIndicator = React.memo(PresenceIndicator);
+MemoizedPresenceIndicator.displayName = 'PresenceIndicator';
+
+export default MemoizedPresenceIndicator;

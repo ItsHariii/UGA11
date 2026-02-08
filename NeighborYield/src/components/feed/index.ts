@@ -2,7 +2,13 @@
  * Feed components barrel export
  */
 
-export { SharePostCard, formatRelativeTime, getRemainingTTL, isInWarningState, getRiskTierLabel } from './SharePostCard';
+export {
+  SharePostCard,
+  formatRelativeTime,
+  getRemainingTTL,
+  isInWarningState,
+  getRiskTierLabel,
+} from './SharePostCard';
 export type { SharePostCardProps } from './SharePostCard';
 
 export { InterestedButton, getButtonText } from './InterestedButton';
@@ -10,3 +16,21 @@ export type { InterestedButtonProps, InterestButtonState } from './InterestedBut
 
 export { FeedList } from './FeedList';
 export type { FeedListProps } from './FeedList';
+
+export {
+  DualModeFeedCard,
+  getModeConfig,
+  getCategoryFromPost,
+  getCategoryIcon,
+  getCategoryIconComponent,
+  getRiskTierStyle,
+  abundanceModeConfig,
+  survivalModeConfig,
+} from './DualModeFeedCard';
+export type {
+  DualModeFeedCardProps,
+  CardSize,
+  ModeStyleConfig,
+  PostCategory,
+  RiskTierStyle,
+} from './DualModeFeedCard';

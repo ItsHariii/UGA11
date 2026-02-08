@@ -2,10 +2,7 @@
  * Interest components barrel export
  */
 
-export {
-  InterestNotificationCard,
-  formatInterestTime,
-} from './InterestNotificationCard';
+export { InterestNotificationCard, formatInterestTime } from './InterestNotificationCard';
 export type { InterestNotificationCardProps } from './InterestNotificationCard';
 
 export {

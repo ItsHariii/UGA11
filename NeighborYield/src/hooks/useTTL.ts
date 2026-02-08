@@ -57,22 +57,19 @@ export function useTTL(): UseTTLResult {
       const remaining = post.expiresAt - currentTime;
       return Math.max(0, remaining);
     },
-    []
+    [],
   );
 
-  const isExpired = useCallback(
-    (post: SharePost, currentTime: number = Date.now()): boolean => {
-      return post.expiresAt <= currentTime;
-    },
-    []
-  );
+  const isExpired = useCallback((post: SharePost, currentTime: number = Date.now()): boolean => {
+    return post.expiresAt <= currentTime;
+  }, []);
 
   const isExpiringSoon = useCallback(
     (post: SharePost, currentTime: number = Date.now()): boolean => {
       const remaining = post.expiresAt - currentTime;
       return remaining > 0 && remaining < EXPIRING_SOON_THRESHOLD;
     },
-    []
+    [],
   );
 
   const formatRelativeTime = useCallback(
@@ -96,14 +93,14 @@ export function useTTL(): UseTTLResult {
       }
       return `posted ${diffHours} hours ago`;
     },
-    []
+    [],
   );
 
   const purgeExpiredPosts = useCallback(
     (currentTime: number = Date.now()) => {
       removeExpiredPosts(currentTime);
     },
-    [removeExpiredPosts]
+    [removeExpiredPosts],
   );
 
   const calculateExpiresAt = useCallback(
@@ -111,12 +108,12 @@ export function useTTL(): UseTTLResult {
       const ttl = getTTLForRisk(riskTier);
       return createdAt + ttl;
     },
-    [getTTLForRisk]
+    [getTTLForRisk],
   );
 
   const activePosts = useMemo((): SharePost[] => {
     const now = Date.now();
-    return state.posts.filter((post) => post.expiresAt > now);
+    return state.posts.filter(post => post.expiresAt > now);
   }, [state.posts]);
 
   // Auto-purge expired posts periodically (every 30 seconds)

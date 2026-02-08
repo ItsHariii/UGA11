@@ -63,20 +63,17 @@ export function usePeerCount(): UsePeerCountResult {
 
   const hasPeers = useMemo(() => state.peerCount > 0, [state.peerCount]);
 
-  const displayText = useMemo(
-    () => formatPeerCount(state.peerCount),
-    [state.peerCount]
-  );
+  const displayText = useMemo(() => formatPeerCount(state.peerCount), [state.peerCount]);
 
   const getPeer = useCallback(
     (endpointId: string): PeerInfo | undefined => {
       return state.peers.get(endpointId);
     },
-    [state.peers]
+    [state.peers],
   );
 
   const peerIdentifiers = useMemo((): string[] => {
-    return Array.from(state.peers.values()).map((p) => p.userIdentifier);
+    return Array.from(state.peers.values()).map(p => p.userIdentifier);
   }, [state.peers]);
 
   return {

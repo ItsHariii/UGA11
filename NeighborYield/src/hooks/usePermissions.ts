@@ -47,37 +47,43 @@ export interface UsePermissionsResult {
 export function usePermissions(): UsePermissionsResult {
   const { state, setPermissions, setBluetoothEnabled } = useAppContext();
 
+  const getPermissionKey = (
+    permission: MeshPermission,
+  ): keyof Omit<PermissionStatus, 'canUseMesh'> => {
+    return permission === 'nearby_devices' ? 'nearbyDevices' : permission;
+  };
+
   const isGranted = useCallback(
     (permission: MeshPermission): boolean => {
-      return state.permissions[permission] === 'granted';
+      const key = getPermissionKey(permission);
+      return state.permissions[key] === 'granted';
     },
-    [state.permissions]
+    [state.permissions],
   );
 
   const isDenied = useCallback(
     (permission: MeshPermission): boolean => {
-      const permState = state.permissions[permission];
+      const key = getPermissionKey(permission);
+      const permState = state.permissions[key];
       return permState === 'denied' || permState === 'never_ask_again';
     },
-    [state.permissions]
+    [state.permissions],
   );
 
   const getPermissionState = useCallback(
     (permission: MeshPermission): PermissionState => {
-      return state.permissions[permission];
+      const key = getPermissionKey(permission);
+      return state.permissions[key];
     },
-    [state.permissions]
+    [state.permissions],
   );
 
   const deniedPermissions = useMemo((): MeshPermission[] => {
     const permissions: MeshPermission[] = ['bluetooth', 'location', 'nearby_devices'];
-    return permissions.filter((p) => isDenied(p));
+    return permissions.filter(p => isDenied(p));
   }, [isDenied]);
 
-  const hasAnyDenied = useMemo(
-    () => deniedPermissions.length > 0,
-    [deniedPermissions]
-  );
+  const hasAnyDenied = useMemo(() => deniedPermissions.length > 0, [deniedPermissions]);
 
   return {
     permissions: state.permissions,

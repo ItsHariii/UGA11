@@ -20,12 +20,7 @@ export function BluetoothDisabledPrompt({
   onDismiss,
 }: BluetoothDisabledPromptProps): React.JSX.Element {
   return (
-    <Modal
-      visible={visible}
-      transparent
-      animationType="fade"
-      onRequestClose={onDismiss}
-    >
+    <Modal visible={visible} transparent animationType="fade" onRequestClose={onDismiss}>
       <View style={styles.overlay}>
         <View style={styles.promptContainer}>
           <View style={styles.iconContainer}>
@@ -35,8 +30,7 @@ export function BluetoothDisabledPrompt({
           <Text style={styles.title}>Bluetooth is Off</Text>
 
           <Text style={styles.description}>
-            Turn on Bluetooth to connect with neighbors nearby and share food
-            even without internet.
+            Turn on Bluetooth to connect with neighbors nearby and share food even without internet.
           </Text>
 
           <View style={styles.benefitsList}>
@@ -59,8 +53,7 @@ export function BluetoothDisabledPrompt({
               style={styles.enableButton}
               onPress={onEnable}
               accessibilityRole="button"
-              accessibilityLabel="Enable Bluetooth"
-            >
+              accessibilityLabel="Enable Bluetooth">
               <Text style={styles.enableButtonText}>Enable Bluetooth</Text>
             </Pressable>
 
@@ -68,8 +61,7 @@ export function BluetoothDisabledPrompt({
               style={styles.dismissButton}
               onPress={onDismiss}
               accessibilityRole="button"
-              accessibilityLabel="Not now"
-            >
+              accessibilityLabel="Not now">
               <Text style={styles.dismissButtonText}>Not Now</Text>
             </Pressable>
           </View>

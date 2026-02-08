@@ -9,6 +9,7 @@
 import React from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { InterestAck } from '../../types';
+import { useTheme } from '../../theme/ThemeContext';
 
 export interface InterestNotificationCardProps {
   interest: InterestAck;
@@ -44,6 +45,8 @@ export function InterestNotificationCard({
   onDecline,
   isProcessing = false,
 }: InterestNotificationCardProps): React.JSX.Element {
+  const { tokens } = useTheme();
+
   const handleAccept = () => {
     if (!isProcessing) {
       onAccept(interest.id);
@@ -57,44 +60,58 @@ export function InterestNotificationCard({
   };
 
   return (
-    <View style={styles.container}>
+    <View
+      style={[
+        styles.container,
+        {
+          backgroundColor: tokens.colors.backgroundCard,
+          borderLeftColor: tokens.colors.accentPrimary,
+          shadowColor: tokens.colors.shadowColor,
+        },
+      ]}>
       <View style={styles.header}>
-        <Text style={styles.userIdentifier}>{interest.interestedUserIdentifier}</Text>
-        <Text style={styles.timestamp}>{formatInterestTime(interest.timestamp)}</Text>
+        <Text style={[styles.userIdentifier, { color: tokens.colors.accentPrimary }]}>
+          {interest.interestedUserIdentifier}
+        </Text>
+        <Text style={[styles.timestamp, { color: tokens.colors.textMuted }]}>
+          {formatInterestTime(interest.timestamp)}
+        </Text>
       </View>
 
-      <Text style={styles.message}>
-        is interested in your post: <Text style={styles.postTitle}>{postTitle}</Text>
+      <Text style={[styles.message, { color: tokens.colors.textSecondary }]}>
+        is interested in your post:{' '}
+        <Text style={[styles.postTitle, { color: tokens.colors.textPrimary }]}>{postTitle}</Text>
       </Text>
 
       <View style={styles.actions}>
         <Pressable
           style={({ pressed }) => [
             styles.button,
-            styles.declineButton,
+            {
+              backgroundColor: tokens.colors.backgroundSecondary,
+              borderColor: tokens.colors.borderDefault,
+            },
             pressed && styles.buttonPressed,
             isProcessing && styles.buttonDisabled,
           ]}
           onPress={handleDecline}
           disabled={isProcessing}
           accessibilityRole="button"
-          accessibilityLabel="Decline interest"
-        >
-          <Text style={[styles.buttonText, styles.declineButtonText]}>Decline</Text>
+          accessibilityLabel="Decline interest">
+          <Text style={[styles.buttonText, { color: tokens.colors.textSecondary }]}>Decline</Text>
         </Pressable>
 
         <Pressable
           style={({ pressed }) => [
             styles.button,
-            styles.acceptButton,
+            { backgroundColor: tokens.colors.accentPrimary },
             pressed && styles.buttonPressed,
             isProcessing && styles.buttonDisabled,
           ]}
           onPress={handleAccept}
           disabled={isProcessing}
           accessibilityRole="button"
-          accessibilityLabel="Accept interest"
-        >
+          accessibilityLabel="Accept interest">
           <Text style={[styles.buttonText, styles.acceptButtonText]}>Accept</Text>
         </Pressable>
       </View>
@@ -104,18 +121,15 @@ export function InterestNotificationCard({
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#ffffff',
-    borderRadius: 12,
+    borderRadius: 16,
     padding: 16,
     marginHorizontal: 16,
     marginVertical: 8,
-    shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
     borderLeftWidth: 4,
-    borderLeftColor: '#2e7d32',
   },
   header: {
     flexDirection: 'row',
@@ -126,21 +140,17 @@ const styles = StyleSheet.create({
   userIdentifier: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#2e7d32',
   },
   timestamp: {
     fontSize: 12,
-    color: '#9e9e9e',
   },
   message: {
     fontSize: 14,
-    color: '#616161',
     lineHeight: 20,
     marginBottom: 16,
   },
   postTitle: {
     fontWeight: '600',
-    color: '#212121',
   },
   actions: {
     flexDirection: 'row',
@@ -150,17 +160,10 @@ const styles = StyleSheet.create({
   button: {
     paddingVertical: 10,
     paddingHorizontal: 20,
-    borderRadius: 8,
+    borderRadius: 12,
     minWidth: 100,
     alignItems: 'center',
-  },
-  acceptButton: {
-    backgroundColor: '#2e7d32',
-  },
-  declineButton: {
-    backgroundColor: '#f5f5f5',
     borderWidth: 1,
-    borderColor: '#e0e0e0',
   },
   buttonPressed: {
     opacity: 0.7,
@@ -174,9 +177,6 @@ const styles = StyleSheet.create({
   },
   acceptButtonText: {
     color: '#ffffff',
-  },
-  declineButtonText: {
-    color: '#616161',
   },
 });
 

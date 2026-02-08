@@ -51,9 +51,7 @@ export function BackgroundMeshToggle({
     <View style={[styles.container, disabled && styles.disabledContainer]}>
       <View style={styles.header}>
         <Text style={styles.icon}>📡</Text>
-        <Text style={[styles.title, disabled && styles.disabledText]}>
-          Background Mesh
-        </Text>
+        <Text style={[styles.title, disabled && styles.disabledText]}>Background Mesh</Text>
       </View>
 
       <View style={styles.content}>
@@ -206,4 +204,12 @@ const styles = StyleSheet.create({
   },
 });
 
-export default BackgroundMeshToggle;
+// ============================================
+// Memoized Export
+// Requirements: 9.2 - Minimize component re-renders using React.memo
+// ============================================
+
+export const MemoizedBackgroundMeshToggle = React.memo(BackgroundMeshToggle);
+MemoizedBackgroundMeshToggle.displayName = 'BackgroundMeshToggle';
+
+export default MemoizedBackgroundMeshToggle;

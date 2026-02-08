@@ -38,8 +38,7 @@ export function getPermissionExplanation(permission: MeshPermission): Permission
         title: 'Bluetooth Access',
         description:
           'Bluetooth enables device-to-device communication with your neighbors, even without internet.',
-        benefit:
-          'Share food with nearby neighbors when WiFi or cellular is unavailable.',
+        benefit: 'Share food with nearby neighbors when WiFi or cellular is unavailable.',
       };
     case 'location':
       return {
@@ -47,8 +46,7 @@ export function getPermissionExplanation(permission: MeshPermission): Permission
         title: 'Location Access',
         description:
           'Location permission is required by Android for Nearby Connections discovery to find neighbors around you.',
-        benefit:
-          'Discover neighbors in your area who are sharing or looking for food.',
+        benefit: 'Discover neighbors in your area who are sharing or looking for food.',
       };
     case 'nearby_devices':
       return {
@@ -56,8 +54,7 @@ export function getPermissionExplanation(permission: MeshPermission): Permission
         title: 'Nearby Devices',
         description:
           'This permission enables finding neighbors for food sharing through the mesh network.',
-        benefit:
-          'Connect directly with neighbors to share food, even offline.',
+        benefit: 'Connect directly with neighbors to share food, even offline.',
       };
     default:
       return {
@@ -98,8 +95,7 @@ export function PermissionExplanationScreen({
           style={styles.continueButton}
           onPress={onContinue}
           accessibilityRole="button"
-          accessibilityLabel={`Continue to grant ${explanation.title}`}
-        >
+          accessibilityLabel={`Continue to grant ${explanation.title}`}>
           <Text style={styles.continueButtonText}>Continue</Text>
         </Pressable>
 
@@ -108,8 +104,7 @@ export function PermissionExplanationScreen({
             style={styles.skipButton}
             onPress={onSkip}
             accessibilityRole="button"
-            accessibilityLabel="Skip this permission"
-          >
+            accessibilityLabel="Skip this permission">
             <Text style={styles.skipButtonText}>Skip for now</Text>
           </Pressable>
         )}

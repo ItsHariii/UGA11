@@ -19,10 +19,7 @@ export interface PresenceTooltipProps {
 /**
  * Returns explanation text based on connectivity mode and peer count
  */
-export function getTooltipExplanation(
-  mode: ConnectivityMode,
-  peerCount: number
-): string {
+export function getTooltipExplanation(mode: ConnectivityMode, peerCount: number): string {
   switch (mode) {
     case 'online':
       return 'You are connected to the internet. Your posts and interests are synced with the cloud, reaching neighbors citywide.';
@@ -31,10 +28,6 @@ export function getTooltipExplanation(
         return `You are in offline mesh mode. ${peerCount} neighbor${peerCount === 1 ? ' is' : 's are'} nearby and can receive your posts directly via Bluetooth.`;
       }
       return 'You are in offline mesh mode, but no neighbors are currently in range. Your posts will be shared when neighbors come nearby.';
-    case 'hybrid':
-      return `You have the best of both worlds! Your posts sync to the cloud AND reach ${peerCount} nearby neighbor${peerCount === 1 ? '' : 's'} directly.`;
-    case 'disconnected':
-      return 'You are currently disconnected. Enable Bluetooth and location permissions, or connect to the internet to share with neighbors.';
     default:
       return 'Checking network status...';
   }
@@ -49,10 +42,6 @@ export function getTooltipTitle(mode: ConnectivityMode): string {
       return '🌐 Online Mode';
     case 'offline':
       return '📡 Mesh Network Mode';
-    case 'hybrid':
-      return '🔗 Hybrid Mode';
-    case 'disconnected':
-      return '📴 Disconnected';
     default:
       return 'Network Status';
   }
@@ -65,19 +54,12 @@ export function PresenceTooltip({
   connectivityMode,
 }: PresenceTooltipProps): React.JSX.Element {
   return (
-    <Modal
-      visible={visible}
-      transparent
-      animationType="fade"
-      onRequestClose={onClose}
-    >
+    <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
       <Pressable style={styles.overlay} onPress={onClose}>
         <View style={styles.tooltipContainer}>
-          <Pressable onPress={(e) => e.stopPropagation()}>
+          <Pressable onPress={e => e.stopPropagation()}>
             <View style={styles.tooltip}>
-              <Text style={styles.title}>
-                {getTooltipTitle(connectivityMode)}
-              </Text>
+              <Text style={styles.title}>{getTooltipTitle(connectivityMode)}</Text>
               <Text style={styles.explanation}>
                 {getTooltipExplanation(connectivityMode, peerCount)}
               </Text>

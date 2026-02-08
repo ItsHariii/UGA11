@@ -6,13 +6,8 @@
  */
 
 import React from 'react';
-import {
-  ActivityIndicator,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import { ActivityIndicator, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
+import { useTheme } from '../../theme/ThemeContext';
 
 export type InterestButtonState = 'idle' | 'loading' | 'success' | 'error';
 
@@ -46,13 +41,22 @@ export function InterestedButton({
   disabled = false,
 }: InterestedButtonProps): React.JSX.Element {
   const isDisabled = disabled || state === 'loading' || state === 'success';
+  const { tokens } = useTheme();
+
+  // Derive darker variant of accentPrimary for success state
+  const successBackground = tokens.colors.accentPrimary.replace(/^#/, '');
+  const r = parseInt(successBackground.substring(0, 2), 16);
+  const g = parseInt(successBackground.substring(2, 4), 16);
+  const b = parseInt(successBackground.substring(4, 6), 16);
+  const darkerAccent = `#${Math.floor(r * 0.7).toString(16).padStart(2, '0')}${Math.floor(g * 0.7).toString(16).padStart(2, '0')}${Math.floor(b * 0.7).toString(16).padStart(2, '0')}`;
 
   return (
     <Pressable
       style={({ pressed }) => [
         styles.button,
-        state === 'success' && styles.successButton,
-        state === 'error' && styles.errorButton,
+        { backgroundColor: tokens.colors.accentPrimary },
+        state === 'success' && { backgroundColor: darkerAccent },
+        state === 'error' && { backgroundColor: tokens.colors.accentDanger },
         isDisabled && styles.disabledButton,
         pressed && !isDisabled && styles.pressedButton,
       ]}
@@ -60,23 +64,17 @@ export function InterestedButton({
       disabled={isDisabled}
       accessibilityRole="button"
       accessibilityLabel={getButtonText(state)}
-      accessibilityState={{ disabled: isDisabled }}
-    >
+      accessibilityState={{ disabled: isDisabled }}>
       <View style={styles.content}>
         {state === 'loading' && (
-          <ActivityIndicator
-            size="small"
-            color="#ffffff"
-            style={styles.spinner}
-          />
+          <ActivityIndicator size="small" color="#ffffff" style={styles.spinner} />
         )}
         <Text
           style={[
             styles.text,
             state === 'success' && styles.successText,
             state === 'error' && styles.errorText,
-          ]}
-        >
+          ]}>
           {getButtonText(state)}
         </Text>
       </View>
@@ -86,19 +84,12 @@ export function InterestedButton({
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: '#2e7d32',
-    borderRadius: 8,
+    borderRadius: 14,
     paddingVertical: 12,
     paddingHorizontal: 20,
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 12,
-  },
-  successButton: {
-    backgroundColor: '#1b5e20',
-  },
-  errorButton: {
-    backgroundColor: '#c62828',
   },
   disabledButton: {
     opacity: 0.6,
@@ -116,8 +107,9 @@ const styles = StyleSheet.create({
   },
   text: {
     color: '#ffffff',
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: '600',
+    fontFamily: Platform.OS === 'ios' ? 'SF Pro Text' : 'sans-serif',
   },
   successText: {
     color: '#ffffff',
